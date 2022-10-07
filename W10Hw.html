@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Embedding Vega-Lite</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.5.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.0"></script>
+
+
+    <style>
+      #vis2{
+        width: 80%;
+        height: 600px;
+        max-width: 1200px;
+        text-align: center;
+      }
+
+      #vis1{
+        width:80%;
+        max-width: 1200px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="vis"></div>
+
+    <script type="text/javascript">
+      var v = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 1200,
+  "height": 300,
+  "title":{"text": "QLD Average Work Commute time by LGA","oreint":"right", "anchor":"middle"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/Jonathan-Uni/Visualisation/main/QueenslandLGA.json",
+    "format": {
+      "type": "topojson",
+      "feature": "QueenslandLGA"
+    }
+    },
+    "projection": {"type":"mercator"},
+    "mark":{"type": "geoshape",
+     "stroke":"black"
+    },
+    "encoding": {"color":{"field":"properties.ABS Data_Average commuting distance (kms)",
+"bin":false, "title":"Average Distance (km)", "type":"quantitative",
+"scale":{"scheme":"warmgreys"}, "legend":{"orient": "left", dx: 200}},
+"tooltip":[{"field":"properties.LGA_NAME_2016", "title":"LGA Name"},
+{"field":"properties.ABS Data_Average commuting distance (kms)", 
+"title":"Average Commute Distance (km)"}]
+}
+};
+      vegaEmbed('#vis', v);
+    </script>
+  <div id = "vis2" max-width: 800px;></div>
+  <script type="text/javascript">
+    var k = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/Jonathan-Uni/Visualisation/main/LGA_Income_Commute.json",
+    "format": {
+      "type": "topojson",
+      "feature": "LGA_Income_Commute"
+    }
+    },
+    "projection": {"type":"mercator"},
+    "vconcat":[{ 
+    "title":{"text" :"Work Commute Time by LGA", "oreint":"right"},
+    "width":"container",
+    "height":"400",
+    "params":[{"name":"lga_filter", "select":"point" ,"value": "null", "toggle":"null"}],
+    "mark":{"type": "geoshape",
+     "stroke":"black"
+    },
+    "encoding": {"color":{"field":"properties.ABS Data_Average commuting distance (kms)",
+    "type":"quantitative", "title":"Average Commute Distance (km)",
+"scale":{"scheme":"yellowgreenblue"},
+"legend":{"orient": "bottom"}},
+
+"tooltip":[{"field":"properties.LGA_NAME_2016", "title":"LGA Name"},
+{"field":"properties.ABS Data_Average commuting distance (kms)", 
+"title":"Average Commute Distance (km)"}]
+}
+},
+{"layer" :[
+{ "transform": [{"filter": {"param": "lga_filter"}}],
+  "width":"400",
+  "autosize":{"type":"fit-x", "contains":"padding"},
+  "title": "Median LGA Personal Income",
+  "mark":"bar",
+"encoding": {"x":{"field": "properties.ReducedLGAIncomeLayer_Median_tot_prsnl_inc_weekly",
+ "type":"quantitative", "title": "Median Income"},
+  "y":{"field":"properties.LGA_NAME_2016", "type": "nominal", "title": {"text":"LGA", "angle":90}}}},
+
+{"transform": [{"filter": {"param": "lga_filter"}}],
+"mark":{"type": "text", "align": "left", "dx":5}, 
+"encoding":{"text": {"field":"properties.LGA_NAME_2016",
+  "type": "nominal"}, "color":{"value":"white"}}}]}
+]
+};
+vegaEmbed('#vis2', k);
+  </script>
+  </body>
+</html>
