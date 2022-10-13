@@ -1,0 +1,215 @@
+<!docType = html>
+<head>
+
+<title>
+    Assignment 2 
+</title>
+
+<link rel="stylesheet" href="./style.css">
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+<script src="./vegalitejs.js"></script>
+
+</head>
+
+<body>
+<div class="header">
+    <h1>2016 Australian Demographic Statistics</h1>
+    <h5>Using data obtained from the ABS</h5>
+</div>
+
+<div class="majorvis">
+    <h2>
+        Population Level Visualisations
+    </h2>
+    <p>Age and Gender Distribution across Australia</p>  
+
+    <div id="poppyramid"></div>
+    <script type="text/javascript">
+        var pyramid = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+                "title":{"text":"Population Pyramid", "anchor": "middle"},
+                "data": {
+                "url": "https://raw.githubusercontent.com/Jonathan-Uni/Visualisation/main/cleaned_gender_2.csv",
+                "format": {
+                    "type": "csv"}
+            },
+                "spacing": 0,
+                "hconcat": [
+                {
+                 "width":300,
+                 "height":400,   
+                "transform":[{"filter":{"field": "Gender", "equal":"Male"}}],
+                "title":"Male",
+                "mark": {"type": "bar"},
+                "encoding": {"x":{"field":"obs", "type": "quantitative", "title":"People",
+                "sort":"descending"},
+                "y":{"field":"Age", "type": "nominal", "sort":["> 85", "75-84","65-74","55-64","45-54","35-44",
+    "25-35","20-25","15-19","5-14","0-4"], 
+                "axis":null},
+                "color":{"field":"Gender", "scale":{"range":["#1b9e77", "#7570b3"]},"legend":{"orient": "none", "legendY": 10, "legendX": 20}},
+                "tooltip":{"field":"percentage", "type": "quantitative", "format":".2%"}}}
+                ,
+                {"height":400,
+                "mark":"text", "encoding": {"y": {"field": "Age", "type": "nominal", "axis": null, "sort": ["> 85", "75-84","65-74","55-64","45-54","35-44",
+    "25-35","20-25","15-19","5-14","0-4"]},
+                "text": {"field": "Age", "type": "nominal"}}},
+                {
+                "width":300,
+                 "height":400,
+                "transform":[{"filter":{"field": "Gender", "equal":"Female"}}],
+                "title":"Female",
+                "mark":"bar",
+                "encoding": {"x":{"field":"obs", "type": "quantitative", "title":"People"},
+                "y":{"field":"Age", "type": "nominal", "sort":["> 85", "75-84","65-74","55-64","45-54","35-44",
+    "25-35","20-25","15-19","5-14","0-4"], "axis":null},
+                "color":{"field":"Gender", "scale":{"range":["#7570b3"]},"legend":{"orient": "none"}},
+                "tooltip":{"field":"percentage", "type": "quantitative", "format":".2%"}}
+            }
+            ],
+            "config": {
+            "view": {"stroke": null},
+            "axis": {"grid": false}
+            }
+            }
+        vegaEmbed("#poppyramid", pyramid);
+    </script>
+    <p>In 2016, the age group which composed the largest percentage of the total population was 25-35 year olds. Cumulatively, they compromised 14.39% of the total population.</p>
+    <p>    
+    In terms of sex, Males composed 49.34% of the population where as Females composed 50.66%.
+    </p>
+</div>
+
+
+<div class="row">
+    <div class="column">
+        <div id = dheatmap></div>
+        <script type="text/javascript">
+            var heatmap =     {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "title":"Income-Age Distribution",
+                "width":600,
+                "height":400,
+                "data":{
+                    "url":"https://raw.githubusercontent.com/Jonathan-Uni/Visualisation/main/long_lga_income_age.csv"
+                },
+                "transform": [{"filter":"datum.LGA == 0"}],
+                "mark":{"type":"rect"},
+                "encoding":{"x":{"field":"IncomeGroup", "type":"nominal", "sort":["1_149", "150_299",
+                "300_399", "400_499","500_649","650_799","800_999","1000_1249","1250_1499","1500_1749",
+                "1750_1999","2000_2999","3000_more"], "title":"Weekly Personal Income"},
+                "y":{"field":"Age", "type": "nominal", "sort":"descending", "title":"Age Group"},
+                "color":{"field":"Count", "scale":{"scheme":"Cividis"}, "type": "quantitative",
+                "title":"Number of People", "legend":{"orient": "right"}},
+
+                
+                "tooltip":[{"field":"Count","title":"Number of People"}]
+                }
+                }
+            vegaEmbed("#dheatmap", heatmap);
+        </script>
+    </div>
+    <div class="columnright">
+        <h2>Income-Age Distribution</h2>
+        <p class = 'text'>In 2016, the majority of Australians had a 
+            median personal weekly income between $650-$1749.
+             Approximately 50,000 people had a median personal weekly income of more than $3000.
+             And Approximately half of the people with a median personal weekly income was aged between 35-44.
+             There is also a significant percentage of people aged between 65-74 earning around 300-399 weekly,
+              this is close to the average weekly aged pension benefit.
+            </p>
+
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="column">
+        <div id = "map"></div>
+        <script type="text/javascript">
+            var incomemap = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            
+                    
+                "data": {
+                    "url": "https://raw.githubusercontent.com/Jonathan-Uni/Visualisation/main/lga_gender_income.json",
+                    "format": {
+                    "type": "topojson",
+                    "feature": "lga_gender_income"}
+                    },
+
+                    "hconcat":[
+                                        
+                    { "layer":[{
+      
+                "title":"Gender Distribution of LGA",
+                "transform": [{"filter": {"param": "lga"}},
+                {"fold": ["properties.gender_m_count", "properties.gender_f_count"],
+                "as": ["gender", "people"]},
+                {"joinaggregate": [{"op":"sum", "field": "people", "as":"total_people"}]},
+                {"calculate": "datum.people/datum.total_people * 100", "as": "percent"}],
+                "mark":"arc",
+                "encoding": {"theta":{"field":"people", "type":"quantitative", "sort":"-color"},
+                "color":{"field":"gender", "type":"nominal", "scale":{"range":["#1b9e77", "#7570b3"]},
+                "legend":{"labelExpr": "{'properties.gender_m_count' : 'Male', 'properties.gender_f_count' : 'Female'}[datum.label]"},
+                "title": "Gender"},
+            "tooltip":[{"field":"properties.LGA_NAME_2016", "title":"Local Government Area:"},
+            {"field":"percent", "format": ".2f", "type": "quantitative", "title": "Percentage"}]}
+            },{"mark":{"type":"text", "text":"Click on a LGA on the map to see its gender distribution",
+                "dy":140}}]}, 
+                {"width": 600,
+                    "height":400,
+                    "layer":[
+                    {"params": [{"name":"lga", "select": {"type": "point",
+                    "fields": ["properties.LGA_CODE_2016"], "toggle": "false"}}],
+                    
+                    "projection": {"type":"mercator"},
+                    "mark":{"type": "geoshape",
+                    "stroke":"black"},
+                    "title":"Median Weekly Personal Income ($)",
+                    "encoding": {"color":{"condition":{"param":"lga",
+                    "field":"properties.Median_tot_prsnl_inc_weekly",
+                    "type":"quantitative", "title":"Median Weekly Income ($)",
+                    "scale":{"scheme":"yellowgreenblue"}, "legend":{"orient": "none", "direction": "horizontal", 
+                    "legendX":130, "legendY":300}}, "value":"grey"},
+                    "tooltip":[{"field":"properties.LGA_NAME_2016", "title":"LGA Name"},
+                    {"field":"properties.Median_tot_prsnl_inc_weekly", 
+                    "title":"Median Weekly Personal Income ($)"}]
+                    }
+                    },
+
+                    {"mark":{"type":"text", "text":"Unincorp. Other Territories", "dy":-150, "dx":-200}},
+                    {"mark":{"type":"text", "text":"←", "dy":85, "dx":-310, "angle":45}},
+                    {"mark":{"type":"text", "text":"Unincorp. NSW", "dy":75, "dx":210}},
+                    {"mark":{"type":"text", "text":"←", "dy":-215, "dx":50, "angle":90}},
+                    {"mark":{"type":"text", "text":"Unincorp. Other Territories", "dy":-20, "dx":230}},
+                    {"mark":{"type":"text", "text":"→", "dy":-200, "dx":210, "angle":45}}
+                
+                    ]}],
+                            "resolve": {"scale": {"color": "independent"}}
+                            }
+
+            vegaEmbed("#map", incomemap);
+        </script>
+
+    </div>
+
+    <div class="columnright">
+        <h2>Income Map with Gender Distribution</h2>
+        <p class = 'text'>One of the Local Government Areas (LGAs) with the highest median personal 
+            weekly income is Ashburton (S) located in Western Australia, with an income of $2381.
+            
+         </p>
+         <p class = 'text'>   
+            Interestingly, it's one of the LGAs with the highest gender imbalance.
+            As of 2016, 72.37% of people in the LGA were Male whereas only 27.63% were Female. 
+            These statistics could be partially explained by the prescence of the mining industry in the region.
+        </p>
+
+
+    </div>
+</div>
+
+</body>
