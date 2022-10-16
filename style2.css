@@ -1,0 +1,44 @@
+*{
+  font-family: 'Lucida Sans';
+}
+
+.text{
+  text-align: left;
+  padding-left: 8px;
+}
+
+.wrapper{
+  display: grid;
+  grid-template-columns: 1fr 5fr 1fr;
+  padding: none;
+}
+
+.Cmain{
+  text-align: center;
+  overflow: auto;
+  max-width: 5fr;
+}
+.Cleft{
+  background-color: azure;
+  height: page;
+}
+
+.Cright{
+  background-color: azure;
+  height: page;
+}
+
+.header{
+  font-size: 24;
+  font-weight: 500;
+}
+
+.doubletext{
+  display: grid;
+  grid-template-columns: 2.4fr 2.4fr;
+}
+
+.poppyramid{
+  width: 2fr;
+  overflow: auto;
+}
